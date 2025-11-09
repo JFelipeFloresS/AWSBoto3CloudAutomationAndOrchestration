@@ -4,14 +4,13 @@ from enum import Enum
 class InputType(Enum):
     STRING = 1
     INT = 2
-    STRING_LIST = 3
 
 
 def get_user_input(prompt, input_type: InputType = InputType.STRING, default_value='', available_options: list = None):
     """
     Get user input from the console with validation and default value support.
     :param prompt: The prompt message to display to the user.
-    :param input_type: The expected type of the input (STRING, INT, STRING_LIST).
+    :param input_type: The expected type of the input (STRING, INT).
     :param default_value: The default value to use if the user provides no input.
     :param available_options: The list of valid options for the input.
     :return: The validated user input, or False if the operation was cancelled.
@@ -39,9 +38,7 @@ def get_user_input(prompt, input_type: InputType = InputType.STRING, default_val
                 return get_user_input(prompt, InputType.INT, default_value, available_options)
 
         # Validate against available options if provided
-
-        # For STRING and INT types check directly against available options
-        if input_type != InputType.STRING_LIST and available_options is not None and response not in available_options:
+        if available_options is not None and response not in available_options:
             try:
                 index = int(response) - 1  # Adjust for zero-based index
                 if 0 <= index < len(available_options):
@@ -50,15 +47,6 @@ def get_user_input(prompt, input_type: InputType = InputType.STRING, default_val
             except Exception as e:
                 print(f"Invalid input. Available options are: {', '.join(map(str, available_options))}")
                 return get_user_input(prompt, input_type, default_value, available_options)
-
-        # For STRING_LIST type, split input with comma and validate each item against available options
-        if input_type == InputType.STRING_LIST and available_options is not None:
-            response_list = [item.strip() for item in response.split(',')]
-            for item in response_list:
-                if item not in available_options:
-                    print(f"Invalid input: {item}. Available options are: {', '.join(map(str, available_options))}")
-                    return get_user_input(prompt, input_type, default_value, available_options)
-            response = response_list
 
         return response
 
