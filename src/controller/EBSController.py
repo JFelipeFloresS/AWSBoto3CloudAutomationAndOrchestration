@@ -37,8 +37,8 @@ class EBSController:
             AvailabilityZone=availability_zone,
             VolumeType=volume_type
         )
-        print(f"Created volume with ID: {response['VolumeId']}, Size: {response['Size']} GiB, "
-              f"Type: {response['VolumeType']}, Availability Zone: {response['AvailabilityZone']}")
+        print(f"Created volume with ID: {response.volume_id}, Size: {response.size} GiB, "
+              f"Type: {response.volume_type}, Availability Zone: {response.availability_zone}")
         return response
 
     def attach_volume_to_instance(self, volume_id, instance_id, device: str = '/dev/sdf'):

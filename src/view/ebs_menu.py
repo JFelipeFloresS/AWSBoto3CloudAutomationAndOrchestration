@@ -95,7 +95,7 @@ class EBSMenu(AbstractMenu):
 
         # create volume
         try:
-            self.ebs_controller.create_volume(availability_zone, size, volume_type)
+            self.ebs_controller.create_volume(size, availability_zone, volume_type)
         except Exception as e:
             print(f"Error creating volume: {e}")
 

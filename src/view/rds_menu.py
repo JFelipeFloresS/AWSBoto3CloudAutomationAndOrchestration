@@ -121,10 +121,6 @@ class RDSMenu(AbstractMenu):
         # delete db instance
         try:
             db_instance_id = self.rds_controller.delete_db_instance(db_instance_id)
-            # wait for db instance to be deleted
-            print("Waiting for DB instance to be deleted...")
-            waiter = self.rds_controller.rds_client.get_waiter('db_instance_deleted')
-            waiter.wait(DBInstanceIdentifier=db_instance_id)
             print(f"DB instance '{db_instance_id}' deleted successfully.")
             return db_instance_id
         except Exception as e:
@@ -264,10 +260,6 @@ class RDSMenu(AbstractMenu):
         try:
             restored_db_instance_id = self.rds_controller.restore_db_instance_from_snapshot(db_snapshot_id,
                                                                                             db_instance_id)
-            # wait for db instance to be available
-            print("Waiting for restored DB instance to be available...")
-            waiter = self.rds_controller.rds_client.get_waiter('db_instance_available')
-            waiter.wait(DBInstanceIdentifier=restored_db_instance_id)
             print(f"DB instance '{restored_db_instance_id}' restored successfully from snapshot '{db_snapshot_id}'.")
             return restored_db_instance_id
         except Exception as e:

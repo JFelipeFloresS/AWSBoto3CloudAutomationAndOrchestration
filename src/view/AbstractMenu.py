@@ -17,7 +17,7 @@ class AbstractMenu:
         choice = get_user_input("Select an option", InputType.INT, available_options=self.options)
         return choice
 
-    def display(self):
+    def display_options(self):
         """
         Display the menu options to the user.
         :return: None
@@ -36,9 +36,12 @@ class AbstractMenu:
         """
         is_continue = True
         while is_continue:
-            self.display()
-            choice = self.get_user_choice()
-            is_continue = self.execute_choice(choice)
+            try:
+                self.display_options()
+                choice = self.get_user_choice()
+                is_continue = self.execute_choice(choice)
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
 
     @staticmethod
     def handle_invalid_choice():

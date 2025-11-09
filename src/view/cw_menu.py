@@ -1,11 +1,14 @@
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 
 from src.controller.CloudWatchController import CloudWatchController
 from src.controller.EC2Controller import EC2Controller
 from src.model.Resources import Resource
 from src.utils.list_utils import list_ec2_instances, EC2ListType, list_ordered_list
-from src.utils.user_input_handler import get_user_input
+from src.utils.user_input_handler import get_user_input, InputType
 from src.view.AbstractMenu import AbstractMenu
+
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+DATETIME_COMPACT_FORMAT = '%Y%m%d%H%M%S'
 
 
 class CloudWatchMenu(AbstractMenu):
@@ -53,40 +56,48 @@ class CloudWatchMenu(AbstractMenu):
         if not instance: return
 
         namespace = "AWS/EC2"
-        metric_names = ["DiskReadOps", "CPUCreditsUsage"]
+        metric_names = ["DiskReadOps", "CPUCreditUsage"]
         dimensions = [{
             "Name": "InstanceId",
             "Value": instance
         }]
 
+        time_range_minutes = get_user_input("Enter the time range in minutes to retrieve metrics for", default_value=30,
+                                            input_type=InputType.INT)
+        if not time_range_minutes: return
+
         # get current time
         from datetime import datetime, timezone
         utc = datetime.now(timezone.utc)
 
-        # start_utc is 30min before current time
-        start_time = utc - timedelta(minutes=30)
+        # start_utc is time_range_minutes before current time
+        start_time = utc - timedelta(minutes=time_range_minutes)
         end_time = utc
-        period = 1800
+        period = 60 * time_range_minutes
         statistics = ["Average"]
 
+        print(
+            f"Querying metrics from {start_time.strftime(DATETIME_FORMAT)} to {end_time.strftime(DATETIME_FORMAT)} (UTC), period: {time_range_minutes} minutes.")
+
         for metric_name in metric_names:
-            try:
-                datapoints = self.cw_controller.get_metrics_statistics(
-                    namespace, metric_name, dimensions, start_time, end_time, period, statistics
-                )
+            for stat in statistics:
+                try:
+                    datapoints = self.cw_controller.get_metrics_statistics(namespace, metric_name, dimensions,
+                                                                           start_time,
+                                                                           end_time, period, [stat])
 
-                if not datapoints:
-                    print(
-                        f"No data points found for average {metric_name} within the last 30 minutes for instance {instance}.")
-                    continue
+                    if not datapoints:
+                        print(
+                            f"\n{metric_name}: No data points found for {stat} {metric_name} within the last {time_range_minutes} minutes for instance {instance}.")
+                        continue
 
-                print(f"\nMetric Statistics for {metric_name} in {namespace}:")
-                for dp in sorted(datapoints, key=lambda x: x['Timestamp']):
-                    timestamp = dp['Timestamp']
-                    stats = ', '.join([f"{stat}: {dp[stat]}" for stat in statistics if stat in dp])
-                    print(f"Timestamp: {timestamp}, {stats}")
-            except Exception as e:
-                print(f"Error retrieving data for metric {metric_name}: {e}")
+                    print(f"\n{metric_name}: Metric Statistics for {metric_name} ({stat}) for instance {instance}:")
+                    for dp in sorted(datapoints, key=lambda x: x['Timestamp']):
+                        timestamp = dp['Timestamp']
+                        value = dp.get(stat)
+                        print(f"Timestamp: {timestamp}, {stat}: {value}")
+                except Exception as e:
+                    print(f"\n{metric_name}: Error retrieving data for metric {metric_name} ({stat}): {e}")
 
     def set_disk_write_bytes_alarm(self):
         """
@@ -118,7 +129,7 @@ class CloudWatchMenu(AbstractMenu):
                                   available_options=ec2_instances[EC2ListType.ALL])
         if not instance: return
 
-        alarm_name = f"DiskWriteBytes_Alarm_CreatedOn_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+        alarm_name = f"DiskWriteBytes_Alarm_CreatedOn_{datetime.now(timezone.utc).strftime(DATETIME_COMPACT_FORMAT)}"
         comparison_operator = "GreaterThanOrEqualToThreshold"
         metric_name = "DiskWriteBytes"
         statistic = "Average"

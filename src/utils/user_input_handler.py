@@ -25,8 +25,8 @@ def get_user_input(prompt, input_type: InputType = InputType.STRING, default_val
         full_prompt += " (type 'cancel' to cancel): "
         response = input(full_prompt).strip() or default_value
 
-        # Allow user to cancel the operation
-        if response.lower() == 'cancel':
+        # Allow user to cancel the operation. check if response is string before checking as ints can't be .lower()
+        if isinstance(response, str) and response.lower() == 'cancel':
             print("Operation cancelled by user.")
             return False
 
@@ -36,7 +36,7 @@ def get_user_input(prompt, input_type: InputType = InputType.STRING, default_val
                 response = int(response)
             except ValueError:
                 print("Invalid input. Expected an integer.")
-                return get_user_input(prompt, InputType.INT)
+                return get_user_input(prompt, InputType.INT, default_value, available_options)
 
         # Validate against available options if provided
 
