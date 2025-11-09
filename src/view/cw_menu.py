@@ -147,6 +147,7 @@ class CloudWatchMenu(AbstractMenu):
         alarm_actions = [f"arn:aws:automate:{self.ec2_controller.ec2.meta.client.meta.region_name}:ec2:stop"]
 
         try:
+            print("Setting CloudWatch alarm")
             self.cw_controller.set_alarm(
                 alarm_name,
                 comparison_operator,
@@ -159,5 +160,6 @@ class CloudWatchMenu(AbstractMenu):
                 alarm_actions=alarm_actions,
                 dimensions=dimensions
             )
+            print(f"Alarm '{alarm_name}' has been set successfully.")
         except Exception as e:
             print(f"Error setting alarm '{alarm_name}': {e}")

@@ -1,8 +1,11 @@
 from src.controller.EC2Controller import EC2Controller
 from src.model.Resources import Resource
-from src.utils.list_utils import list_ec2_instances, EC2ListType
+from src.utils.list_utils import list_ec2_instances, EC2ListType, list_ordered_list
 from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
+
+WINDOWS_AMI_ID = 'ami-0c0dd5ec2d91c4221'
+UBUNTU_AMI_ID = 'ami-049442a6cf8319180'
 
 
 class EC2Menu(AbstractMenu):
@@ -23,6 +26,8 @@ class EC2Menu(AbstractMenu):
         ec2_client = res.ec2_client()
         self.ec2_controller = EC2Controller(ec2_resource, ec2_client)
 
+        self.OS_options = ["Windows", "Linux"]
+
     def execute_choice(self, choice):
         if choice == 1:
             list_ec2_instances(self.ec2_controller, list_type=EC2ListType.SPLIT)
@@ -31,7 +36,7 @@ class EC2Menu(AbstractMenu):
         elif choice == 3:
             self.stop_instance()
         elif choice == 4:
-            self.ec2_controller.launch_instance()
+            self.launch_instance()
         elif choice == 5:
             self.terminate_instance()
         elif choice == 9:
@@ -60,7 +65,9 @@ class EC2Menu(AbstractMenu):
 
         # start instance
         try:
+            print("Starting EC2 instance:", instance_id)
             self.ec2_controller.start_instance(instance_id)
+            print(f"Instance {instance_id} is now running.")
         except Exception as e:
             print(f"Error starting instance {instance_id}: {e}")
 
@@ -81,9 +88,37 @@ class EC2Menu(AbstractMenu):
 
         # stop instance
         try:
-            self.ec2_controller.stop_instance(instance_id)
+            print("Stopping instance:", instance_id)
+            response = self.ec2_controller.stop_instance(instance_id)
+            print('Stop instance request response status:', response['ResponseMetadata']['HTTPStatusCode'])
         except Exception as e:
             print(f"Error stopping instance {instance_id}: {e}")
+
+    def launch_instance(self):
+        """
+        Launch a new EC2 instance with predefined parameters.
+        :return: The launched EC2 instance object.
+        """
+        # request user input so user can enter windows or linux
+
+        os_options = list_ordered_list(self.OS_options, "Available OS options:")
+        user_input = get_user_input("Enter the OS for the new EC2 instance windows or linux",
+                                    available_options=os_options).lower()
+        if not user_input: return None
+        ami_id = None
+        if user_input == 'windows':
+            ami_id = WINDOWS_AMI_ID
+        elif user_input == 'linux':
+            ami_id = UBUNTU_AMI_ID
+
+        print("Launching a new EC2 instance...")
+        try:
+            instance = self.ec2_controller.launch_instance(ami_id)
+            print(f'Launched EC2 Instance ID: {instance.id}')
+            return instance
+        except Exception as e:
+            print(f"Error launching {user_input} instance: {e}")
+            return None
 
     def terminate_instance(self):
         """
@@ -102,6 +137,8 @@ class EC2Menu(AbstractMenu):
 
         # terminate instance
         try:
-            self.ec2_controller.terminate_instance(instance_id)
+            print("Terminating instance:", instance_id)
+            response = self.ec2_controller.terminate_instance(instance_id)
+            print('Terminate instance request response status:', response['ResponseMetadata']['HTTPStatusCode'])
         except Exception as e:
             print(f"Error terminating instance {instance_id}: {e}")

@@ -17,11 +17,8 @@ class EBSController:
         """
         volumes = self.ec2.volumes.all()
         volume_list = []
-        for i, volume in enumerate(volumes, start=1):
+        for volume in volumes:
             volume_list.append(volume)
-            print(f"{i}. Volume ID: {volume.id}, Size: {volume.size} GiB, State: {volume.state}, "
-                  f"Type: {volume.volume_type}, Availability Zone: {volume.availability_zone}, "
-                  f"Attachments: {volume.attachments}")
         return volume_list
 
     def create_volume(self, size, availability_zone: str = DEFAULT_REGION, volume_type: str = 'gp2'):
@@ -37,8 +34,6 @@ class EBSController:
             AvailabilityZone=availability_zone,
             VolumeType=volume_type
         )
-        print(f"Created volume with ID: {response.volume_id}, Size: {response.size} GiB, "
-              f"Type: {response.volume_type}, Availability Zone: {response.availability_zone}")
         return response
 
     def attach_volume_to_instance(self, volume_id, instance_id, device: str = '/dev/sdf'):
@@ -53,8 +48,6 @@ class EBSController:
             VolumeId=volume_id,
             Device=device
         )
-        print(f"Attaching volume {volume_id} to instance {instance_id} on device {device}. "
-              f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         return response
 
     def detach_volume_from_instance(self, volume_id, instance_id):
@@ -67,8 +60,6 @@ class EBSController:
         response = self.ec2.Instance(instance_id).detach_volume(
             VolumeId=volume_id
         )
-        print(f"Detaching volume {volume_id} from instance {instance_id}. "
-              f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         return response
 
     def modify_volume_capacity(self, volume_id, new_size: int):
@@ -82,8 +73,6 @@ class EBSController:
             VolumeId=volume_id,
             Size=new_size
         )
-        print(f"Modifying size of volume {volume_id} to {new_size} GiB. "
-              f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         return response
 
     def delete_volume(self, volume_id):
@@ -93,8 +82,6 @@ class EBSController:
         :return: Response from the delete_volume call.
         """
         response = self.ec2.Volume(volume_id).delete()
-        print(f"Deleted volume {volume_id}. "
-              f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         return response
 
     def list_snapshots(self):
@@ -104,11 +91,8 @@ class EBSController:
         """
         snapshots = self.ec2.snapshots.filter(OwnerIds=['self'])
         snapshot_list = []
-        for i, snapshot in enumerate(snapshots, start=1):
+        for snapshot in snapshots:
             snapshot_list.append(snapshot)
-            print(
-                f"{i}. Snapshot ID: {snapshot.id}, Volume ID: {snapshot.volume_id}, Size: {snapshot.volume_size} GiB, "
-                f"State: {snapshot.state}, Description: {snapshot.description}, Start Time: {snapshot.start_time}")
         return snapshot_list
 
     def take_snapshot_of_volume(self, volume_id, description: str = 'Created from EBSController'):
@@ -119,8 +103,6 @@ class EBSController:
         :return: The created snapshot's information.
         """
         response = self.ec2.Volume(volume_id).create_snapshot(Description=description)
-        print(f"Created snapshot with ID: {response.snapshot_id} for volume {volume_id}. "
-              f"Description: {description}")
         return response
 
     def create_volume_from_snapshot(self, snapshot_id, availability_zone, volume_type: str = 'gp2'):
@@ -136,8 +118,6 @@ class EBSController:
             AvailabilityZone=availability_zone,
             VolumeType=volume_type
         )
-        print(f"Created volume with ID: {response.volume_id} from snapshot {snapshot_id}, "
-              f"Type: {response.volume_type}, Availability Zone: {response.availability_zone}")
         return response
 
     def delete_snapshot(self, snapshot_id):
@@ -147,8 +127,6 @@ class EBSController:
         :return: Response from the delete_snapshot call.
         """
         response = self.ec2.Snapshot(snapshot_id).delete()
-        print(f"Deleted snapshot {snapshot_id}. "
-              f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         return response
 
     def create_snapshot(self, volume_id, description: str = 'Created from EBSController'):
@@ -162,6 +140,4 @@ class EBSController:
             VolumeId=volume_id,
             Description=description
         )
-        print(f"Created snapshot with ID: {response['SnapshotId']} for volume {volume_id}. "
-              f"Description: {description}")
         return response

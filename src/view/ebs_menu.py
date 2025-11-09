@@ -68,6 +68,10 @@ class EBSMenu(AbstractMenu):
         """
         try:
             volumes = self.ebs_controller.list_existing_volumes()
+            for i, volume in enumerate(volumes, start=1):
+                print(f"{i}. Volume ID: {volume.id}, Size: {volume.size} GiB, State: {volume.state}, "
+                      f"Type: {volume.volume_type}, Availability Zone: {volume.availability_zone}, "
+                      f"Attachments: {volume.attachments}")
             volume_ids = [v.id for v in volumes]
             return volume_ids
         except Exception as e:
@@ -95,7 +99,10 @@ class EBSMenu(AbstractMenu):
 
         # create volume
         try:
-            self.ebs_controller.create_volume(size, availability_zone, volume_type)
+            print("Creating new EBS volume")
+            response = self.ebs_controller.create_volume(size, availability_zone, volume_type)
+            print(f"Created volume with ID: {response.volume_id}, Size: {response.size} GiB, "
+                  f"Type: {response.volume_type}, Availability Zone: {response.availability_zone}")
         except Exception as e:
             print(f"Error creating volume: {e}")
 
@@ -122,7 +129,9 @@ class EBSMenu(AbstractMenu):
 
         # attach volume
         try:
-            self.ebs_controller.attach_volume_to_instance(volume_id, instance_id, device)
+            print("Attaching volume to instance:", instance_id)
+            response = self.ebs_controller.attach_volume_to_instance(volume_id, instance_id, device)
+            print(f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         except Exception as e:
             print(f"Error attaching volume: {e}")
 
@@ -145,7 +154,9 @@ class EBSMenu(AbstractMenu):
 
         # detach volume
         try:
-            self.ebs_controller.detach_volume_from_instance(volume_id, instance_id)
+            print("Detaching volume", volume_id, "from instance", instance_id)
+            response = self.ebs_controller.detach_volume_from_instance(volume_id, instance_id)
+            print(f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         except Exception as e:
             print(f"Error detaching volume: {e}")
 
@@ -166,7 +177,9 @@ class EBSMenu(AbstractMenu):
 
         # modify volume capacity
         try:
-            self.ebs_controller.modify_volume_capacity(volume_id, new_size)
+            print(f"Modifying size of volume {volume_id} to {new_size} GiB.")
+            response = self.ebs_controller.modify_volume_capacity(volume_id, new_size)
+            print(f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         except Exception as e:
             print(f"Error modifying volume capacity: {e}")
 
@@ -183,7 +196,10 @@ class EBSMenu(AbstractMenu):
 
         # delete volume
         try:
-            self.ebs_controller.delete_volume(volume_id)
+            print(f"Deleting volume {volume_id}.")
+            response = self.ebs_controller.delete_volume(volume_id)
+            print(f"Deleted volume {volume_id}. "
+                  f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         except Exception as e:
             print(f"Error deleting volume: {e}")
 
@@ -194,6 +210,10 @@ class EBSMenu(AbstractMenu):
         """
         try:
             snapshots = self.ebs_controller.list_snapshots()
+            for i, snapshot in enumerate(snapshots, start=1):
+                print(
+                    f"{i}. Snapshot ID: {snapshot.id}, Volume ID: {snapshot.volume_id}, Size: {snapshot.volume_size} GiB, "
+                    f"State: {snapshot.state}, Description: {snapshot.description}, Start Time: {snapshot.start_time}")
             snapshot_ids = [s.id for s in snapshots]
             return snapshot_ids
         except Exception as e:
@@ -217,7 +237,10 @@ class EBSMenu(AbstractMenu):
 
         # take snapshot
         try:
-            self.ebs_controller.take_snapshot_of_volume(volume_id, description)
+            print(f"Taking snapshot of volume {volume_id}.")
+            response = self.ebs_controller.take_snapshot_of_volume(volume_id, description)
+            print(f"Created snapshot with ID: {response.snapshot_id} for volume {volume_id}. "
+                  f"Description: {description}")
         except Exception as e:
             print(f"Error taking snapshot of volume: {e}")
 
@@ -243,7 +266,10 @@ class EBSMenu(AbstractMenu):
 
         # create volume from snapshot
         try:
-            self.ebs_controller.create_volume_from_snapshot(snapshot_id, availability_zone, volume_type)
+            print(f"Creating volume from snapshot {snapshot_id}.")
+            response = self.ebs_controller.create_volume_from_snapshot(snapshot_id, availability_zone, volume_type)
+            print(f"Created volume with ID: {response.volume_id} from snapshot {snapshot_id}, "
+                  f"Type: {response.volume_type}, Availability Zone: {response.availability_zone}")
         except Exception as e:
             print(f"Error creating volume from snapshot: {e}")
 
@@ -260,6 +286,9 @@ class EBSMenu(AbstractMenu):
 
         # delete snapshot
         try:
-            self.ebs_controller.delete_snapshot(snapshot_id)
+            print(f"Deleting snapshot {snapshot_id}.")
+            response = self.ebs_controller.delete_snapshot(snapshot_id)
+            print(f"Deleted snapshot {snapshot_id}. "
+                  f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         except Exception as e:
             print(f"Error deleting snapshot: {e}")

@@ -56,4 +56,3 @@ class CloudWatchController:
             AlarmActions=alarm_actions or [],
             Dimensions=dimensions or []
         )
-        print(f"Alarm '{alarm_name}' has been set successfully.")

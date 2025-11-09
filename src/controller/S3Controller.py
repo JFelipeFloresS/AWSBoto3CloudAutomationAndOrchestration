@@ -35,7 +35,6 @@ class S3Controller:
         """
         bucket = self.s3_service.Bucket(bucket_name)
         bucket.upload_file(file_path, object_key)
-        print(f"Uploaded {file_path} to {bucket_name}/{object_key}")
 
     def download_object(self, bucket_name, object_key, download_path, file_extension):
         """
@@ -49,7 +48,6 @@ class S3Controller:
         bucket = self.s3_service.Bucket(bucket_name)
         file_extension = '.' + file_extension if not file_extension.startswith('.') else file_extension
         bucket.download_file(object_key, download_path + '/' + object_key + file_extension)
-        print(f"Downloaded {bucket_name}/{object_key} to {download_path}")
 
     def delete_bucket(self, bucket_name):
         """
@@ -62,7 +60,6 @@ class S3Controller:
         bucket.objects.all().delete()
         # Then, delete the bucket itself
         bucket.delete()
-        print(f"Deleted bucket: {bucket_name}")
 
     def create_bucket(self, bucket_name, region: str = DEFAULT_REGION):
         """
@@ -78,4 +75,3 @@ class S3Controller:
                 Bucket=bucket_name,
                 CreateBucketConfiguration={'LocationConstraint': region}
             )
-        print(f"Created bucket: {bucket_name} in region: {region}")

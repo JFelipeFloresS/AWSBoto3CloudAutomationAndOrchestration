@@ -113,7 +113,9 @@ class S3Menu(AbstractMenu):
 
         # upload object
         try:
+            print(f"Uploading {file_path} to {bucket_name}/{object_key}...")
             self.s3_controller.upload_object(bucket_name, object_key, file_path)
+            print(f"Uploaded {file_path} to {bucket_name}/{object_key}")
         except Exception as e:
             print(f"Error uploading object: {e}")
 
@@ -151,7 +153,9 @@ class S3Menu(AbstractMenu):
 
         # download object
         try:
+            print(f"Downloading {bucket_name}/{object_key} to {download_path} as .{file_extension}")
             self.s3_controller.download_object(bucket_name, object_key, download_path, file_extension)
+            print(f"Downloaded {bucket_name}/{object_key} to {download_path} as .{file_extension}")
         except Exception as e:
             print(f"Error downloading object: {e}")
 
@@ -171,7 +175,9 @@ class S3Menu(AbstractMenu):
 
         # delete bucket
         try:
+            print(f"Deleting bucket '{bucket_name}'")
             self.s3_controller.delete_bucket(bucket_name)
+            print(f"Deleted bucket: {bucket_name}")
         except Exception as e:
             print(f"Error deleting bucket: {e}")
 
@@ -187,6 +193,8 @@ class S3Menu(AbstractMenu):
 
         # create bucket
         try:
+            print(f"Creating bucket '{bucket_name}'")
             self.s3_controller.create_bucket(bucket_name)
+            print(f"Created bucket: {bucket_name}")
         except Exception as e:
             print(f"Error creating bucket: {e}")
