@@ -21,7 +21,7 @@ To install the required packages, run one of the commands (depending on your Pyt
 
 ## ENVIRONMENT VARIABLES
 
-The file `./usercred.txt` contains the user credentials in the following format:
+The file [usercred.txt](usercred.txt) contains the user credentials in the following format:
 
 ```
 AWS_ACCESS_KEY_ID={your_aws_access_key_id}
@@ -44,7 +44,8 @@ To run the code, execute one of the following commands in your terminal (dependi
     python3 src/main.py
     ```
 
-Make sure you have the required packages installed and the `usercred.txt` file properly configured before running the
+Make sure you have the required packages installed and the [usercred.txt](usercred.txt) file properly configured before
+running the
 code.
 
 ## USER INPUT
