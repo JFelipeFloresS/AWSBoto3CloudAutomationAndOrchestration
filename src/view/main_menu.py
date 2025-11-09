@@ -1,5 +1,6 @@
 from src.view.AbstractMenu import AbstractMenu
 
+
 class MainMenu(AbstractMenu):
     def __init__(self):
         main_menu_options = \

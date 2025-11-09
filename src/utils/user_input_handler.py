@@ -1,11 +1,13 @@
 from enum import Enum
 
+
 class InputType(Enum):
     STRING = 1
     INT = 2
     STRING_LIST = 3
 
-def get_user_input(prompt, input_type: InputType=InputType.STRING, default_value='', available_options: list=None):
+
+def get_user_input(prompt, input_type: InputType = InputType.STRING, default_value='', available_options: list = None):
     """
     Get user input from the console with validation and default value support.
     :param prompt: The prompt message to display to the user.

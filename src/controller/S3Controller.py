@@ -64,7 +64,7 @@ class S3Controller:
         bucket.delete()
         print(f"Deleted bucket: {bucket_name}")
 
-    def create_bucket(self, bucket_name, region: str=DEFAULT_REGION):
+    def create_bucket(self, bucket_name, region: str = DEFAULT_REGION):
         """
         Create a new S3 bucket.
         :param bucket_name: The name of the S3 bucket to create.

@@ -7,6 +7,7 @@ class EC2ListType(Enum):
     RUNNING = 3
     STOPPED = 4
 
+
 def list_ec2_instances(ec2_controller, list_type: EC2ListType = EC2ListType.SPLIT, skip_print: bool = False):
     """
     List EC2 instances based on the specified type.
@@ -66,11 +67,13 @@ def list_ec2_instances(ec2_controller, list_type: EC2ListType = EC2ListType.SPLI
         print(f"Error listing EC2 instances: {e}")
         return {}
 
+
 def list_ordered_list(input_list, list_title):
     print(list_title)
     for i, item in enumerate(input_list, start=1):
         print(f"{i}. {item}")
     return input_list
+
 
 def ec2_to_string(instance, region_name, index):
     """

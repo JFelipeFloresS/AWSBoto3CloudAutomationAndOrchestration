@@ -24,7 +24,7 @@ class EBSController:
                   f"Attachments: {volume.attachments}")
         return volume_list
 
-    def create_volume(self, size, availability_zone: str=DEFAULT_REGION, volume_type: str='gp2'):
+    def create_volume(self, size, availability_zone: str = DEFAULT_REGION, volume_type: str = 'gp2'):
         """
         Create a new EBS volume.
         :param size: Size of the volume in GiB.
@@ -41,7 +41,7 @@ class EBSController:
               f"Type: {response['VolumeType']}, Availability Zone: {response['AvailabilityZone']}")
         return response
 
-    def attach_volume_to_instance(self, volume_id, instance_id, device: str='/dev/sdf'):
+    def attach_volume_to_instance(self, volume_id, instance_id, device: str = '/dev/sdf'):
         """
         Attach an EBS volume to an EC2 instance.
         :param volume_id: The ID of the EBS volume to attach.
@@ -106,11 +106,12 @@ class EBSController:
         snapshot_list = []
         for i, snapshot in enumerate(snapshots, start=1):
             snapshot_list.append(snapshot)
-            print(f"{i}. Snapshot ID: {snapshot.id}, Volume ID: {snapshot.volume_id}, Size: {snapshot.volume_size} GiB, "
-                  f"State: {snapshot.state}, Description: {snapshot.description}, Start Time: {snapshot.start_time}")
+            print(
+                f"{i}. Snapshot ID: {snapshot.id}, Volume ID: {snapshot.volume_id}, Size: {snapshot.volume_size} GiB, "
+                f"State: {snapshot.state}, Description: {snapshot.description}, Start Time: {snapshot.start_time}")
         return snapshot_list
 
-    def take_snapshot_of_volume(self, volume_id, description: str='Created from EBSController'):
+    def take_snapshot_of_volume(self, volume_id, description: str = 'Created from EBSController'):
         """
         Take a snapshot of an EBS volume.
         :param volume_id: The ID of the EBS volume to snapshot.
@@ -122,7 +123,7 @@ class EBSController:
               f"Description: {description}")
         return response
 
-    def create_volume_from_snapshot(self, snapshot_id, availability_zone, volume_type: str='gp2'):
+    def create_volume_from_snapshot(self, snapshot_id, availability_zone, volume_type: str = 'gp2'):
         """
         Create a new EBS volume from an existing snapshot.
         :param snapshot_id: The ID of the snapshot to create the volume from.
@@ -150,7 +151,7 @@ class EBSController:
               f"Response status: {response['ResponseMetadata']['HTTPStatusCode']}")
         return response
 
-    def create_snapshot(self, volume_id, description: str='Created from EBSController'):
+    def create_snapshot(self, volume_id, description: str = 'Created from EBSController'):
         """
         Take a snapshot of an EBS volume.
         :param volume_id: The ID of the EBS volume to snapshot.

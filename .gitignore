@@ -5,3 +5,4 @@ usercred.txt
 *.rdp
 .DS_Store
 __pycache__
+.idea

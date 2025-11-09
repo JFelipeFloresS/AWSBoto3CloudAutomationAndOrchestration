@@ -26,7 +26,8 @@ class CloudWatchController:
         )
         return response['Datapoints']
 
-    def set_alarm(self, alarm_name, comparison_operator, metric_name, statistic, threshold, evaluation_periods, period, actions_enabled=True, alarm_actions=None, dimensions=None):
+    def set_alarm(self, alarm_name, comparison_operator, metric_name, statistic, threshold, evaluation_periods, period,
+                  actions_enabled=True, alarm_actions=None, dimensions=None):
         """
         Create or update a CloudWatch alarm.
 

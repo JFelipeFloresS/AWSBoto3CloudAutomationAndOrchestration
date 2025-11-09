@@ -1,10 +1,11 @@
+from src.controller.EC2Controller import EC2Controller
+from src.model.Resources import Resource
 from src.utils.list_utils import list_ec2_instances, EC2ListType
 from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
-from src.controller.EC2Controller import EC2Controller
-from src.model.Resources import Resource
 
-class EC2Menu (AbstractMenu):
+
+class EC2Menu(AbstractMenu):
     def __init__(self):
         ec2_menu_options = \
             {1: "List instances",

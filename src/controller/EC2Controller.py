@@ -5,6 +5,7 @@ EC2_KEY_PAIR_NAME = 'Cloud Automation and Orchestration'
 WINDOWS_AMI_ID = 'ami-0c0dd5ec2d91c4221'
 UBUNTU_AMI_ID = 'ami-049442a6cf8319180'
 
+
 class EC2Controller:
     def __init__(self, ec2, ec2_client):
         """
@@ -22,7 +23,7 @@ class EC2Controller:
         }
         self.OS_options = ["Windows", "Linux"]
 
-    def get_ec2_instances(self, list_type: EC2ListType=EC2ListType.SPLIT):
+    def get_ec2_instances(self, list_type: EC2ListType = EC2ListType.SPLIT):
         """
         List all EC2 instances in the specified region.
         :param list_type: EC2ListType indicating which instances to list (ALL, SPLIT, RUNNING, STOPPED).
@@ -78,7 +79,8 @@ class EC2Controller:
         # request user input so user can enter windows or linux
 
         os_options = list_ordered_list(self.OS_options, "Available OS options:")
-        user_input = get_user_input("Enter the OS for the new EC2 instance windows or linux", available_options=os_options).lower()
+        user_input = get_user_input("Enter the OS for the new EC2 instance windows or linux",
+                                    available_options=os_options).lower()
         if not user_input: return None
         ami_id = None
         if user_input == 'windows':

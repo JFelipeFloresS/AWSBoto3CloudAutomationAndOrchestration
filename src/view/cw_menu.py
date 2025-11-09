@@ -1,11 +1,11 @@
 from datetime import timedelta, datetime
 
+from src.controller.CloudWatchController import CloudWatchController
+from src.controller.EC2Controller import EC2Controller
 from src.model.Resources import Resource
 from src.utils.list_utils import list_ec2_instances, EC2ListType, list_ordered_list
 from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
-from src.controller.CloudWatchController import CloudWatchController
-from src.controller.EC2Controller import EC2Controller
 
 
 class CloudWatchMenu(AbstractMenu):
@@ -48,7 +48,8 @@ class CloudWatchMenu(AbstractMenu):
         if not ec2_instances:
             print("No EC2 instances available to retrieve metrics.")
             return
-        instance = get_user_input("Select an EC2 instance by ID to retrieve metrics for", available_options=ec2_instances[EC2ListType.ALL])
+        instance = get_user_input("Select an EC2 instance by ID to retrieve metrics for",
+                                  available_options=ec2_instances[EC2ListType.ALL])
         if not instance: return
 
         namespace = "AWS/EC2"
@@ -75,7 +76,8 @@ class CloudWatchMenu(AbstractMenu):
                 )
 
                 if not datapoints:
-                    print(f"No data points found for average {metric_name} within the last 30 minutes for instance {instance}.")
+                    print(
+                        f"No data points found for average {metric_name} within the last 30 minutes for instance {instance}.")
                     continue
 
                 print(f"\nMetric Statistics for {metric_name} in {namespace}:")
@@ -105,12 +107,15 @@ class CloudWatchMenu(AbstractMenu):
         print("EC2 Instances with existing DiskWriteBytes alarms:", alarmed_instances)
 
         ec2_instances = list_ec2_instances(self.ec2_controller, list_type=EC2ListType.ALL, skip_print=True)
-        ec2_instances[EC2ListType.ALL] = list_ordered_list([inst for inst in ec2_instances[EC2ListType.ALL] if inst not in alarmed_instances], "Available EC2 Instances for Alarm Setup:")
+        ec2_instances[EC2ListType.ALL] = list_ordered_list(
+            [inst for inst in ec2_instances[EC2ListType.ALL] if inst not in alarmed_instances],
+            "Available EC2 Instances for Alarm Setup:")
         if not ec2_instances[EC2ListType.ALL]:
             print("No EC2 instances available to set alarms.")
             return
 
-        instance = get_user_input("Select an EC2 instance to set DiskWriteBytes alarm on", available_options=ec2_instances[EC2ListType.ALL])
+        instance = get_user_input("Select an EC2 instance to set DiskWriteBytes alarm on",
+                                  available_options=ec2_instances[EC2ListType.ALL])
         if not instance: return
 
         alarm_name = f"DiskWriteBytes_Alarm_CreatedOn_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"

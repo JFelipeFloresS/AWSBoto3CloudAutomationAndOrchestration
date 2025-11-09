@@ -112,7 +112,8 @@ class EBSMenu(AbstractMenu):
 
         # get instance id
         instances = list_ec2_instances(self.ec2_controller, list_type=EC2ListType.ALL)
-        instance_id = get_user_input("Enter Instance ID to attach the volume to", available_options=instances[EC2ListType.ALL])
+        instance_id = get_user_input("Enter Instance ID to attach the volume to",
+                                     available_options=instances[EC2ListType.ALL])
         if not instance_id: return
 
         # get device name
@@ -138,7 +139,8 @@ class EBSMenu(AbstractMenu):
 
         # get instance id
         instances = list_ec2_instances(self.ec2_controller, list_type=EC2ListType.ALL)
-        instance_id = get_user_input("Enter Instance ID to detach the volume from", available_options=instances[EC2ListType.ALL])
+        instance_id = get_user_input("Enter Instance ID to detach the volume from",
+                                     available_options=instances[EC2ListType.ALL])
         if not instance_id: return
 
         # detach volume

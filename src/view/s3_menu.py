@@ -1,8 +1,8 @@
+from src.controller.S3Controller import S3Controller
+from src.model.Resources import Resource
 from src.utils.list_utils import list_ordered_list
 from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
-from src.controller.S3Controller import S3Controller
-from src.model.Resources import Resource
 
 
 class S3Menu(AbstractMenu):
@@ -140,11 +140,13 @@ class S3Menu(AbstractMenu):
         if not object_key: return
 
         # get local file path to save the downloaded object
-        download_path = get_user_input("Enter the local file path to save the downloaded object (specify only the directory, e.g., /home/user/downloads)")
+        download_path = get_user_input(
+            "Enter the local file path to save the downloaded object (specify only the directory, e.g., /home/user/downloads)")
         if not download_path: return
 
         # get file extension
-        file_extension = get_user_input("Enter the file extension for the downloaded file (e.g., txt, jpg)", default_value="")
+        file_extension = get_user_input("Enter the file extension for the downloaded file (e.g., txt, jpg)",
+                                        default_value="")
         if not file_extension: return
 
         # download object

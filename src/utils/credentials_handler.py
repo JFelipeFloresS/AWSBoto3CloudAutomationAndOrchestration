@@ -1,5 +1,6 @@
 import os
 
+
 def get_aws_access_credentials():
     """
     Retrieve AWS access credentials from usercred.txt file.
@@ -28,6 +29,7 @@ def get_aws_access_credentials():
         'aws_access_key_id': credentials.get('AWS_ACCESS_KEY_ID'),
         'aws_secret_access_key': credentials.get('AWS_SECRET_ACCESS_KEY')
     }
+
 
 def get_rds_master_credentials():
     """

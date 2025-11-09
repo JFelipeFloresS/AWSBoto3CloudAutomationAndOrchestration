@@ -1,8 +1,8 @@
 from src.controller.RDSController import RDSController
 from src.model.Resources import Resource
 from src.utils.list_utils import list_ordered_list
+from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
-from src.utils.user_input_handler import get_user_input, InputType
 
 
 class RDSMenu(AbstractMenu):
@@ -158,13 +158,20 @@ class RDSMenu(AbstractMenu):
             print(f"Error rebooting DB instance: {e}")
             return None
 
-    def list_db_snapshots(self, print_list: bool=True):
+    def list_db_snapshots(self, print_list: bool = True, deletable_only: bool = False):
         """
         List all RDS DB snapshots in the account.
+        :param print_list: Whether to print the list.
+        :param deletable_only: If True, only list snapshots that can be deleted (manual).
         :return: List of RDS DB snapshot identifiers.
         """
         try:
             db_snapshots = self.rds_controller.list_db_snapshots()
+            if deletable_only:
+                db_snapshots = [
+                    snap for snap in db_snapshots
+                    if snap.get('SnapshotType', 'manual') == 'manual'
+                ]
             if print_list:
                 db_snapshot_list = [
                     f"{db_snapshot['DBSnapshotIdentifier']}"
@@ -187,7 +194,8 @@ class RDSMenu(AbstractMenu):
         if not db_instances:
             print("No DB instances available to create a snapshot.")
             return None
-        db_instance_id = get_user_input("Enter the DB instance identifier to create a snapshot", available_options=db_instances)
+        db_instance_id = get_user_input("Enter the DB instance identifier to create a snapshot",
+                                        available_options=db_instances)
         if not db_instance_id: return None
 
         # find snapshot ids for the selected db instance
@@ -213,10 +221,10 @@ class RDSMenu(AbstractMenu):
         :return: The identifier of the deleted DB snapshot.
         """
 
-        # get db snapshot id
-        db_snapshots = self.list_db_snapshots()
+        # get db snapshot id (only manual/deletable)
+        db_snapshots = self.list_db_snapshots(deletable_only=True)
         if not db_snapshots:
-            print("No DB snapshots available to delete.")
+            print("No deletable DB snapshots available to delete.")
             return None
         db_snapshot_id = get_user_input("Enter the DB snapshot identifier to delete", available_options=db_snapshots)
         if not db_snapshot_id: return None
@@ -245,7 +253,8 @@ class RDSMenu(AbstractMenu):
         if not db_snapshots:
             print("No DB snapshots available to restore from.")
             return None
-        db_snapshot_id = get_user_input("Enter the DB snapshot identifier to restore from", available_options=db_snapshots)
+        db_snapshot_id = get_user_input("Enter the DB snapshot identifier to restore from",
+                                        available_options=db_snapshots)
         if not db_snapshot_id: return None
 
         # db instance id
@@ -253,7 +262,8 @@ class RDSMenu(AbstractMenu):
         if not db_instance_id: return None
 
         try:
-            restored_db_instance_id = self.rds_controller.restore_db_instance_from_snapshot(db_snapshot_id, db_instance_id)
+            restored_db_instance_id = self.rds_controller.restore_db_instance_from_snapshot(db_snapshot_id,
+                                                                                            db_instance_id)
             # wait for db instance to be available
             print("Waiting for restored DB instance to be available...")
             waiter = self.rds_controller.rds_client.get_waiter('db_instance_available')
