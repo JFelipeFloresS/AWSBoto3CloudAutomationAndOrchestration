@@ -1,4 +1,4 @@
-from src.model.Resources import DEFAULT_REGION
+from src.utils.config import DEFAULT_REGION, DEFAULT_VOLUME_TYPE, DEFAULT_DEVICE_NAME, DEFAULT_SNAPSHOT_NAME
 
 
 class EBSController:
@@ -21,7 +21,7 @@ class EBSController:
             volume_list.append(volume)
         return volume_list
 
-    def create_volume(self, size, availability_zone: str = DEFAULT_REGION, volume_type: str = 'gp2'):
+    def create_volume(self, size, availability_zone: str = DEFAULT_REGION, volume_type: str = DEFAULT_VOLUME_TYPE):
         """
         Create a new EBS volume.
         :param size: Size of the volume in GiB.
@@ -36,7 +36,7 @@ class EBSController:
         )
         return response
 
-    def attach_volume_to_instance(self, volume_id, instance_id, device: str = '/dev/sdf'):
+    def attach_volume_to_instance(self, volume_id, instance_id, device: str = DEFAULT_DEVICE_NAME):
         """
         Attach an EBS volume to an EC2 instance.
         :param volume_id: The ID of the EBS volume to attach.
@@ -95,7 +95,7 @@ class EBSController:
             snapshot_list.append(snapshot)
         return snapshot_list
 
-    def take_snapshot_of_volume(self, volume_id, description: str = 'Created from EBSController'):
+    def take_snapshot_of_volume(self, volume_id, description: str = DEFAULT_SNAPSHOT_NAME):
         """
         Take a snapshot of an EBS volume.
         :param volume_id: The ID of the EBS volume to snapshot.
@@ -105,7 +105,7 @@ class EBSController:
         response = self.ec2.Volume(volume_id).create_snapshot(Description=description)
         return response
 
-    def create_volume_from_snapshot(self, snapshot_id, availability_zone, volume_type: str = 'gp2'):
+    def create_volume_from_snapshot(self, snapshot_id, availability_zone, volume_type: str = DEFAULT_VOLUME_TYPE):
         """
         Create a new EBS volume from an existing snapshot.
         :param snapshot_id: The ID of the snapshot to create the volume from.
@@ -129,7 +129,7 @@ class EBSController:
         response = self.ec2.Snapshot(snapshot_id).delete()
         return response
 
-    def create_snapshot(self, volume_id, description: str = 'Created from EBSController'):
+    def create_snapshot(self, volume_id, description: str = DEFAULT_SNAPSHOT_NAME):
         """
         Take a snapshot of an EBS volume.
         :param volume_id: The ID of the EBS volume to snapshot.

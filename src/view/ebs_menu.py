@@ -1,6 +1,8 @@
 from src.controller.EBSController import EBSController
 from src.controller.EC2Controller import EC2Controller, EC2ListType
-from src.model.Resources import Resource, DEFAULT_REGION
+from src.model.Resources import Resource
+from src.utils.config import DEFAULT_VOLUME_SIZE_GIB, DEFAULT_VOLUME_TYPE, DEFAULT_DEVICE_NAME, \
+    DEFAULT_AVAILABILITY_ZONE
 from src.utils.list_utils import list_ec2_instances, list_ordered_list
 from src.utils.user_input_handler import get_user_input, InputType
 from src.view.AbstractMenu import AbstractMenu
@@ -85,16 +87,17 @@ class EBSMenu(AbstractMenu):
         """
 
         # get availability zone
-        availability_zone = get_user_input("Enter Availability Zone", default_value=DEFAULT_REGION + 'a')
+        availability_zone = get_user_input("Enter Availability Zone", default_value=DEFAULT_AVAILABILITY_ZONE)
         if not availability_zone: return
 
         # get volume size
-        size = get_user_input("Enter Volume Size in GiB", InputType.INT, default_value=8)
+        size = get_user_input("Enter Volume Size in GiB", InputType.INT, default_value=DEFAULT_VOLUME_SIZE_GIB)
         if not size: return
 
         # get volume type
         volume_types = list_ordered_list(self.volume_types, "Available EBS Volume Types:")
-        volume_type = get_user_input(f"Enter Volume Type", default_value='gp2', available_options=volume_types)
+        volume_type = get_user_input(f"Enter Volume Type", default_value=DEFAULT_VOLUME_TYPE,
+                                     available_options=volume_types)
         if not volume_type: return
 
         # create volume
@@ -124,7 +127,7 @@ class EBSMenu(AbstractMenu):
         if not instance_id: return
 
         # get device name
-        device = get_user_input("Enter Device Name", default_value='/dev/sdf')
+        device = get_user_input("Enter Device Name", default_value=DEFAULT_DEVICE_NAME)
         if not device: return
 
         # attach volume
@@ -256,12 +259,13 @@ class EBSMenu(AbstractMenu):
         if not snapshot_id: return
 
         # get availability zone
-        availability_zone = get_user_input("Enter Availability Zone", default_value=DEFAULT_REGION + 'a')
+        availability_zone = get_user_input("Enter Availability Zone", default_value=DEFAULT_AVAILABILITY_ZONE)
         if not availability_zone: return
 
         # get volume type
         volume_types = list_ordered_list(self.volume_types, "Available EBS Volume Types:")
-        volume_type = get_user_input(f"Enter Volume Type", default_value='gp2', available_options=volume_types)
+        volume_type = get_user_input(f"Enter Volume Type", default_value=DEFAULT_VOLUME_TYPE,
+                                     available_options=volume_types)
         if not volume_type: return
 
         # create volume from snapshot

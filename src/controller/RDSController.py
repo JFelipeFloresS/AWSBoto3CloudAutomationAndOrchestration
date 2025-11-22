@@ -1,3 +1,4 @@
+from src.utils.config import DEFAULT_RDS_DB_INSTANCE_CLASS, DEFAULT_DB_STORAGE_GIB
 from src.utils.credentials_handler import get_rds_master_credentials
 
 
@@ -26,8 +27,8 @@ class RDSController:
         response = self.rds_client.create_db_instance(
             DBName=db_name,
             DBInstanceIdentifier=db_id,
-            AllocatedStorage=20,
-            DBInstanceClass="db.t4g.micro",
+            AllocatedStorage=DEFAULT_DB_STORAGE_GIB,
+            DBInstanceClass=DEFAULT_RDS_DB_INSTANCE_CLASS,
             Engine=engine,
             AvailabilityZone=availability_zone,
             MasterUsername=self.credentials["RDS_MASTER_USERNAME"],

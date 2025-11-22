@@ -1,6 +1,5 @@
+from src.utils.config import EC2_KEY_PAIR_NAME, DEFAULT_EC2_INSTANCE_TYPE
 from src.utils.list_utils import EC2ListType
-
-EC2_KEY_PAIR_NAME = 'Cloud Automation and Orchestration'
 
 
 class EC2Controller:
@@ -69,7 +68,7 @@ class EC2Controller:
             ImageId=ami_id,
             MinCount=1,
             MaxCount=1,
-            InstanceType='t3.micro',
+            InstanceType=DEFAULT_EC2_INSTANCE_TYPE,
             KeyName=EC2_KEY_PAIR_NAME
         )
         instance = instances[0]

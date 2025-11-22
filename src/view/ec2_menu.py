@@ -1,11 +1,9 @@
 from src.controller.EC2Controller import EC2Controller
 from src.model.Resources import Resource
+from src.utils.config import WINDOWS_AMI_ID, UBUNTU_AMI_ID
 from src.utils.list_utils import list_ec2_instances, EC2ListType, list_ordered_list
 from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
-
-WINDOWS_AMI_ID = 'ami-0c0dd5ec2d91c4221'
-UBUNTU_AMI_ID = 'ami-049442a6cf8319180'
 
 
 class EC2Menu(AbstractMenu):

@@ -1,4 +1,4 @@
-from src.model.Resources import DEFAULT_REGION
+from src.utils.config import DEFAULT_REGION
 
 
 class S3Controller:

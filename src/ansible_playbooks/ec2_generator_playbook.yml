@@ -1,0 +1,15 @@
+- hosts: localhost
+  gather_facts: False
+
+  tasks:
+
+    - name: Provision an EC2 instance with a public IP address
+      amazon.aws.ec2_instance:
+        name: Master
+        key_name: "Cloud Automation and Orchestration"
+        instance_type: t3.micro
+        security_group: default
+        network:
+          assign_public_ip: true
+        image_id: ami-049442a6cf8319180
+      register: result

@@ -1,5 +1,6 @@
 from src.controller.RDSController import RDSController
 from src.model.Resources import Resource
+from src.utils.config import DEFAULT_AVAILABILITY_ZONE
 from src.utils.list_utils import list_ordered_list
 from src.utils.user_input_handler import get_user_input
 from src.view.AbstractMenu import AbstractMenu
@@ -89,7 +90,7 @@ class RDSMenu(AbstractMenu):
         if not db_engine: return None
 
         # get availability zone
-        availability_zone = get_user_input("Enter the availability zone", default_value="eu-west-1a")
+        availability_zone = get_user_input("Enter the availability zone", default_value=DEFAULT_AVAILABILITY_ZONE)
         if not availability_zone: return None
 
         try:

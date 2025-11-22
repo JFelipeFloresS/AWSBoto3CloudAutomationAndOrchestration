@@ -1,10 +1,14 @@
-# AWS Management Console CLI
-
 #### Jose Felipe Flores da Silva
 
 #### Student number: R00293192
 
 #### [GitHub Repository](https://github.com/JFelipeFloresS/AWSBoto3CloudAutomationAndOrchestration)
+
+# PROJECTS
+
+[AWS Management Console CLI](#aws-management-console-cli)
+
+[Ansible Management of AWS Resources](#ansible-management-of-aws-resources)
 
 ## DEPENDENCIES
 
@@ -26,22 +30,26 @@ The file [usercred.txt](usercred.txt) contains the user credentials in the follo
 ```
 AWS_ACCESS_KEY_ID={your_aws_access_key_id}
 AWS_SECRET_ACCESS_KEY={your_aws_secret_access_key}
-EC2_RDP_PASSWORD={your_ec2_rdp_password} # this is not actually used in the code
+EC2_RDP_PASSWORD={your_ec2_rdp_password} # avaialable in the file provided for the assingment, but not actually used in the code
 RDS_MASTER_USERNAME={your_rds_master_username}
 RDS_MASTER_PASSWORD={your_rds_master_password}
+MASTER_EC2_PUBLIC_DNS={your_master_ec2_public_dns}
 ```
 
 The utility [credentials_handler](src/utils/credentials_handler.py) provides access to these environment variables.
 
+# AWS Management Console CLI
+
 ## RUNNING THE APPLICATION
 
-To run the code, execute one of the following commands in your terminal (depending on your Python installation):
+To run the code, execute one of the following commands in your terminal from the root directory of the project (
+depending on your Python installation):
 
 - ```
-    python src/main.py
+    python -m src.main
     ```
 - ```
-    python3 src/main.py
+    python3 -m src.main
     ```
 
 Make sure you have the required packages installed and the [usercred.txt](usercred.txt) file properly configured before
@@ -85,7 +93,7 @@ On any menu, typing "exit" or the corresponding number for the exit option will 
 ## DEFAULT REGION
 
 The default region for all services is `eu-west-1`. You can change the region in the code if needed by changing the
-constant `DEFAULT_REGION` in [Resources](src/model/Resources.py).
+constant `DEFAULT_REGION` in [Config](src/utils/config.py).
 
 ## FEATURES
 
@@ -210,3 +218,19 @@ The RDS Management feature allows you to:
 - Restore an RDS DB instance from a snapshot of an RDS DB instance
     - ![img_56.png](assets/read_me_imgs/img_56.png)
     - ![img_57.png](assets/read_me_imgs/img_57.png)
+
+# Ansible Management of AWS Resources
+
+## RUNNING THE APPLICATION
+
+To run the Ansible playbooks, ensure you have Ansible and the required dependencies installed.
+
+To run the code, execute one of the following commands in your terminal (depending on your Python installation):
+
+- ```
+    python -m src.ansible
+    ```
+- ```
+    python3 -m src.ansible
+    ```
+  

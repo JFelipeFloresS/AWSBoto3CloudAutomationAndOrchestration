@@ -1,3 +1,6 @@
+from src.utils.config import DEFAULT_NAMESPACE
+
+
 class CloudWatchController:
     def __init__(self, cw_client):
         self.cw_client = cw_client
@@ -47,7 +50,7 @@ class CloudWatchController:
             AlarmName=alarm_name,
             ComparisonOperator=comparison_operator,
             MetricName=metric_name,
-            Namespace='AWS/EC2',
+            Namespace=DEFAULT_NAMESPACE,
             Statistic=statistic,
             Threshold=threshold,
             EvaluationPeriods=evaluation_periods,

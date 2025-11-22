@@ -13,6 +13,7 @@ def list_ec2_instances(ec2_controller, list_type: EC2ListType = EC2ListType.SPLI
     List EC2 instances based on the specified type.
     :param ec2_controller: EC2Controller instance.
     :param list_type: EC2ListType indicating which instances to list (ALL, SPLIT, RUNNING, STOPPED).
+    :param skip_print: If True, skip printing the instances to console.
     :return: dict containing lists of EC2 instances.
     {EC2ListType.RUNNING: [...], EC2ListType.STOPPED: [...]}
     """
@@ -84,6 +85,7 @@ def ec2_to_string(instance, region_name, index):
     :return: String representation of the EC2 instance.
     """
     return (f"{index}. Instance ID: {instance.id}, "
+            f"{("Name: " + instance.tags[0]['Value']) if instance.tags and instance.tags[0]['Value'] != '' else 'Unnamed'}, "
             f"State: {instance.state['Name']}, "
             f"Instance Type: {instance.instance_type}, "
             f"Region: {region_name}, "

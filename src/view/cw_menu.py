@@ -3,12 +3,10 @@ from datetime import timedelta, datetime, timezone
 from src.controller.CloudWatchController import CloudWatchController
 from src.controller.EC2Controller import EC2Controller
 from src.model.Resources import Resource
+from src.utils.config import DATETIME_FORMAT, DATETIME_COMPACT_FORMAT, DEFAULT_NAMESPACE
 from src.utils.list_utils import list_ec2_instances, EC2ListType, list_ordered_list
 from src.utils.user_input_handler import get_user_input, InputType
 from src.view.AbstractMenu import AbstractMenu
-
-DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-DATETIME_COMPACT_FORMAT = '%Y%m%d%H%M%S'
 
 
 class CloudWatchMenu(AbstractMenu):
@@ -55,7 +53,7 @@ class CloudWatchMenu(AbstractMenu):
                                   available_options=ec2_instances[EC2ListType.ALL])
         if not instance: return
 
-        namespace = "AWS/EC2"
+        namespace = DEFAULT_NAMESPACE
         metric_names = ["DiskReadOps", "CPUCreditUsage"]
         dimensions = [{
             "Name": "InstanceId",
