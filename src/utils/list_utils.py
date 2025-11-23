@@ -89,4 +89,5 @@ def ec2_to_string(instance, region_name, index):
             f"State: {instance.state['Name']}, "
             f"Instance Type: {instance.instance_type}, "
             f"Region: {region_name}, "
-            f"Launch Time: {instance.launch_time}")
+            f"Launch Time: {instance.launch_time}"
+            f"Public IP: {instance.public_ip_address if instance.public_ip_address else 'N/A'}")

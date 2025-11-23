@@ -1,0 +1,29 @@
+---
+- name: Install and start Apache2 on selected EC2 instances
+  hosts: "{{ target_group }}"
+  become: yes
+  gather_facts: yes
+  vars:
+    aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+  tasks:
+    - name: Install apache2
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+
+    - name: Start and enable apache2
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Check apache2 service status
+      ansible.builtin.command:
+        cmd: systemctl status apache2
+      register: apache_status
+      changed_when: false
+
+    - name: Display apache2 status
+      ansible.builtin.debug:
+        var: apache_status.stdout_lines

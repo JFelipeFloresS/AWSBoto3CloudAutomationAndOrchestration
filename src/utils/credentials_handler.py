@@ -17,14 +17,6 @@ def get_rds_master_credentials():
     return get_req_credentials(['RDS_MASTER_USERNAME', 'RDS_MASTER_PASSWORD'])
 
 
-def get_ansible_credentials():
-    """
-    Retrieve Ansible-related credentials from usercred.txt file.
-    :return: dict with 'MASTER_EC2_PUBLIC_DNS'
-    """
-    return get_req_credentials(['MASTER_EC2_PUBLIC_DNS'])
-
-
 def get_req_credentials(credentials_list):
     """
     Retrieve specified credentials from usercred.txt file.

@@ -4,11 +4,34 @@
 
 #### [GitHub Repository](https://github.com/JFelipeFloresS/AWSBoto3CloudAutomationAndOrchestration)
 
-# PROJECTS
+# SECTIONS
 
-[AWS Management Console CLI](#aws-management-console-cli)
+- [Dependencies](#dependencies)
+- [Environment Variables](#environment-variables)
+- [Default Region](#default-region)
+- [User Input](#user-input)
+- [Running the Applications](#running-the-applications)
+    - [1. AWS Management Console CLI](#1-aws-management-console-cli)
+    - [2. Ansible EC2 and Apache Automation](#2-ansible-ec2-and-apache-automation)
+- Projects
+    - [AWS Management Console CLI](#aws-management-console-cli)
+        - [Features](#features)
+            - [EC2 Management](#ec2-management)
+            - [EBS Management](#ebs-management)
+            - [S3 Management](#s3-management)
+            - [CloudWatch Monitoring and Alarms](#cloudwatch-monitoring-and-alarms)
+            - [RDS Management](#rds-management)
+    - [Ansible EC2 and Apache Automation](#ansible-ec2-and-apache-automation)
+        - [Required Files](#required-files)
+        - [Features](#features-1)
 
-[Ansible Management of AWS Resources](#ansible-management-of-aws-resources)
+<div style="background-color: #ffeb3b; padding: 10px; margin-bottom: 16px; color: black">
+<strong>WARNING:</strong>
+<br>
+I haven't tested this project on Windows, so there might be some differences in commands or paths.
+<br>
+For this README file, I asked ChatGPT to generate the Windows commands based on the Mac/Linux commands I provided, but I cannot guarantee their accuracy.
+</div>
 
 ## DEPENDENCIES
 
@@ -16,45 +39,38 @@ This project requires the Python packages listed in [requirements.txt](requireme
 
 To install the required packages, run one of the commands (depending on your Python installation) in your terminal:
 
-- ```
-    pip install -r requirements.txt
-    ```
-- ```
-    pip3 install -r requirements.txt
-    ```
+- For Windows:
+  ```shell
+  python -m venv venv               # Create a virtual environment
+  venv\\Scripts\\activate           # Activate the virtual environment
+  pip install -r requirements.txt   # Install the required packages
+  ```
+- For macOS/Linux:
+  ```shell
+  python3 -m venv venv              # Create a virtual environment
+  source venv/bin/activate          # Activate the virtual environment
+  pip3 install -r requirements.txt  # Install the required packages
+  ```
+
+![img.png](assets/read_me_imgs/img58.png)
 
 ## ENVIRONMENT VARIABLES
 
 The file [usercred.txt](usercred.txt) contains the user credentials in the following format:
 
 ```
-AWS_ACCESS_KEY_ID={your_aws_access_key_id}
-AWS_SECRET_ACCESS_KEY={your_aws_secret_access_key}
-EC2_RDP_PASSWORD={your_ec2_rdp_password} # avaialable in the file provided for the assingment, but not actually used in the code
-RDS_MASTER_USERNAME={your_rds_master_username}
-RDS_MASTER_PASSWORD={your_rds_master_password}
-MASTER_EC2_PUBLIC_DNS={your_master_ec2_public_dns}
+AWS_ACCESS_KEY_ID={your_aws_access_key_id}          # used in both projects
+AWS_SECRET_ACCESS_KEY={your_aws_secret_access_key}  # used in both projects
+RDS_MASTER_USERNAME={your_rds_master_username}      # used in AWS Management Console CLI project when creating RDS instances
+RDS_MASTER_PASSWORD={your_rds_master_password}      # used in AWS Management Console CLI project when creating RDS instances
 ```
 
 The utility [credentials_handler](src/utils/credentials_handler.py) provides access to these environment variables.
 
-# AWS Management Console CLI
+## DEFAULT REGION
 
-## RUNNING THE APPLICATION
-
-To run the code, execute one of the following commands in your terminal from the root directory of the project (
-depending on your Python installation):
-
-- ```
-    python -m src.main
-    ```
-- ```
-    python3 -m src.main
-    ```
-
-Make sure you have the required packages installed and the [usercred.txt](usercred.txt) file properly configured before
-running the
-code.
+The default region for all services is `eu-west-1`. You can change the region in the code if needed by changing the
+constant `DEFAULT_REGION` in [Config](src/utils/config.py).
 
 ## USER INPUT
 
@@ -90,10 +106,53 @@ main menu.
 
 On any menu, typing "exit" or the corresponding number for the exit option will terminate the application.
 
-## DEFAULT REGION
+## Running the Applications
 
-The default region for all services is `eu-west-1`. You can change the region in the code if needed by changing the
-constant `DEFAULT_REGION` in [Config](src/utils/config.py).
+This project contains two main Python scripts that can be executed from the project's root directory.
+
+**Important:** Before running either application, make sure you have activated the virtual environment using the
+appropriate command for your operating system:
+
+- For Windows: `venv\Scripts\activate`
+- For macOS/Linux: `source venv/bin/activate`
+
+### 1. AWS Management Console CLI
+
+This is the main application that provides a menu-driven interface for managing various AWS resources. To run it, use
+the following commands:
+
+- **macOS/Linux:**
+  ```shell
+  source venv/bin/activate  # Ensure the virtual environment is activated
+  python3 -m src.main       # Run the main application
+  ```
+- **Windows:**
+  ```shell
+  venv\\Scripts\\activate   # Ensure the virtual environment is activated
+  python -m src.main        # Run the main application
+  ```
+
+### 2. Ansible EC2 and Apache Automation
+
+This script uses Ansible to automate the creation of EC2 instances and the installation of an Apache web server. To run
+it, use the following commands:
+
+- **macOS/Linux:**
+  ```shell
+  source venv/bin/activate  # Ensure the virtual environment is activated
+  python3 -m src.ansible    # Run the Ansible automation script
+  ```
+- **Windows:**
+  ```shell
+  venv\\Scripts\\activate   # Ensure the virtual environment is activated
+  python -m src.ansible     # Run the Ansible automation script
+  ```
+
+> **Note:**
+>
+> The `python` vs `python3` command may vary depending on your system's configuration.
+
+# AWS Management Console CLI
 
 ## FEATURES
 
@@ -219,18 +278,21 @@ The RDS Management feature allows you to:
     - ![img_56.png](assets/read_me_imgs/img_56.png)
     - ![img_57.png](assets/read_me_imgs/img_57.png)
 
-# Ansible Management of AWS Resources
+# Ansible EC2 and Apache Automation
 
-## RUNNING THE APPLICATION
+## Required Files
 
-To run the Ansible playbooks, ensure you have Ansible and the required dependencies installed.
+The file [Cloud Automation and Orchestration.pem](Cloud%20Automation%20and%20Orchestration.pem) is the private key file
+required to connect to the EC2 instance via SSH.
 
-To run the code, execute one of the following commands in your terminal (depending on your Python installation):
+If trying to connect with another key, ensure that the change is reflected in [config.py](src/utils/config.py) by
+changing the constant `EC2_KEY_PAIR_NAME` and placing your own private key file in the root directory of the project.
 
-- ```
-    python -m src.ansible
-    ```
-- ```
-    python3 -m src.ansible
-    ```
-  
+## FEATURES
+
+The Ansible EC2 and Apache Automation application provides the following features:
+
+- Launch two groups of EC2 instances with dynamic sizes based on user input
+    - ![img.png](assets/read_me_imgs/img59.png)
+- Install Apache2 web server on the instances of the selected group
+    - ![img.png](assets/read_me_imgs/img60.png)

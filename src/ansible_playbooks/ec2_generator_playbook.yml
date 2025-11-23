@@ -1,15 +1,51 @@
-- hosts: localhost
+---
+- name: Launch two groups of EC2 instances
+  hosts: localhost
   gather_facts: False
+  vars:
+    group1_size: "{{ group1_size | default(1) }}"  # Allowed values: 1 or 2
+    group2_size: "{{ group2_size | default(1) }}"  # Allowed values: 1 or 2
+    key_name: "{{ key_name }}"
+    region: "{{ region }}"
+    image_id: "{{ image_id }}"
+    instance_type: "{{ instance_type }}"
+    security_group: "{{ security_group }}"
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+
+  # Set default parameters for AWS modules
+  module_defaults:
+    group/aws:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ region }}"
+    amazon.aws.ec2_instance:
+      key_name: "{{ key_name }}"
+      instance_type: "{{ instance_type }}"
+      image_id: "{{ image_id }}"
+      count: "{{ group1_size }}"
+      security_group: "{{ security_group }}"
+      wait: yes
 
   tasks:
-
-    - name: Provision an EC2 instance with a public IP address
+    - name: Launch group 1 EC2 instances
       amazon.aws.ec2_instance:
-        name: Master
-        key_name: "Cloud Automation and Orchestration"
-        instance_type: t3.micro
-        security_group: default
-        network:
-          assign_public_ip: true
-        image_id: ami-049442a6cf8319180
-      register: result
+        name: "group1-instance"
+      register: group1_result
+
+    - name: Launch group 2 EC2 instances
+      amazon.aws.ec2_instance:
+        name: "group2-instance"
+      register: group2_result
+
+    - name: Collect public IPs for both groups
+      set_fact:
+        group1_ips: "{{ group1_result.instances | map(attribute='public_ip_address') | list }}"
+        group2_ips: "{{ group2_result.instances | map(attribute='public_ip_address') | list }}"
+
+    - name: Write IPs to file for Python script
+      copy:
+        dest: "{{ playbook_dir | default('./') }}/ec2_instance_ips.yaml"
+        content: |
+          group1: {{ group1_ips }}
+          group2: {{ group2_ips }}
